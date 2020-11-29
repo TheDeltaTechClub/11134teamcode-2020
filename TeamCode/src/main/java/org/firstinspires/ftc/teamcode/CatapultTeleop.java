@@ -14,6 +14,7 @@ public class BasicTeleop extends OpMode {
     DcMotor conveyorBelt;
     DcMotor launcher;
     DcMotor loaderMotor;
+    DcMotor aimMotor;
 
     public void BasicTeleop() {
 
@@ -27,6 +28,7 @@ public class BasicTeleop extends OpMode {
         conveyorBelt = hardwareMap.dcMotor.get("conveyorBelt");
         launcher = hardwareMap.dcMotor.get("launcher");
         loaderMotor = hardwareMap.dcMotor.get("loaderMotor");
+        aimMotor = hardwareMap.dcMotor.get("aimMotor");
 
         leftDrive.setDirection(DcMotor.Direction.REVERSE);
         rightDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -34,6 +36,7 @@ public class BasicTeleop extends OpMode {
         conveyorBelt.setDirection(DcMotor.Direction.FORWARD);
         launcher.setDirection(DcMotor.Direction.FORWARD);
         loaderMotor.setDirection(DcMotor.Direction.FORWARD);
+        aimMotor.setDirection(DcMotor.Direction.FORWARD);
 
         leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -41,6 +44,7 @@ public class BasicTeleop extends OpMode {
         conveyorBelt.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         launcher.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         loaderMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        aimMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         
         telemetry.addData("Init finished.", "");
         telemetry.update();
@@ -65,18 +69,24 @@ public class BasicTeleop extends OpMode {
      * Y Button: Toggle conveyor belt
      * Z Button: Toggle loader
      *
+     * Right trigger moves aim arm up
+     * Left trigger moves aim arm down
+     *
      */
     
     @Override
     public void loop() {
         float left = gamepad1.left_stick_y;
         float right = gamepad1.right_stick_y;
+        float aim = gamepad1.right_trigger - gamepad1.left_trigger;
 
         left = Range.clip(left, -1, 1);
         right = Range.clip(right, -1, 1);
+        aim = Range.clip(aim, -1, 1);
 
         leftDrive.setPower(left);
         rightDrive.setPower(right);
+        aimMotor.setPower(aim);
         
         if (gamepad1.x) {
             launcher.setPower(islauncherRunning?0:1);
